@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/TomsProducts/AgentBrain/main/.github/banner.png" alt="AgentBrain" width="100%" />
+<img src="https://raw.githubusercontent.com/TomsProducts/AgentBrain/main/.github/banner.svg" alt="AgentBrain" width="100%" />
 
 # AgentBrain
 
