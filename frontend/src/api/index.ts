@@ -32,8 +32,13 @@ export const lessonApi = {
       method: 'POST',
       body: JSON.stringify({ rationale }),
       headers: { 'Content-Type': 'application/json' },
-    }).then(r => {
-      if (!r.ok) return r.json().then(e => Promise.reject(e?.message || `Error ${r.status}`))
+    }).then(async r => {
+      if (!r.ok) {
+        const text = await r.text()
+        let msg = `HTTP ${r.status}`
+        try { const j = JSON.parse(text); msg = j.detail || j.message || j.error || msg } catch {}
+        return Promise.reject(msg)
+      }
       return r.json()
     }),
   reject: (id: number, reason?: string) =>
@@ -41,13 +46,23 @@ export const lessonApi = {
       method: 'POST',
       body: JSON.stringify({ reason }),
       headers: { 'Content-Type': 'application/json' },
-    }).then(r => {
-      if (!r.ok) return r.json().then(e => Promise.reject(e?.message || `Error ${r.status}`))
+    }).then(async r => {
+      if (!r.ok) {
+        const text = await r.text()
+        let msg = `HTTP ${r.status}`
+        try { const j = JSON.parse(text); msg = j.detail || j.message || j.error || msg } catch {}
+        return Promise.reject(msg)
+      }
       return r.json()
     }),
   reopen: (id: number) =>
-    fetch(`${BASE}/lessons/${id}/reopen`, { method: 'POST' }).then(r => {
-      if (!r.ok) return r.json().then(e => Promise.reject(e?.message || `Error ${r.status}`))
+    fetch(`${BASE}/lessons/${id}/reopen`, { method: 'POST' }).then(async r => {
+      if (!r.ok) {
+        const text = await r.text()
+        let msg = `HTTP ${r.status}`
+        try { const j = JSON.parse(text); msg = j.detail || j.message || j.error || msg } catch {}
+        return Promise.reject(msg)
+      }
       return r.json()
     }),
 }
