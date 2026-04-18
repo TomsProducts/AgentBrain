@@ -1,0 +1,9 @@
+CREATE TABLE skill_meta (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    file_path VARCHAR(1000),
+    fail_count INT DEFAULT 0,
+    last_used_at TIMESTAMP,
+    active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW()
+);

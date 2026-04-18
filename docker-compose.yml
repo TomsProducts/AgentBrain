@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - ./data:/app/data
+      - claude-store:/claude-store
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      AGENTBRAIN_CLAUDE_DIR: /claude-store
+      SYNC_TOKEN: ${SYNC_TOKEN:-dev-token-change-me}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  claude-store:
