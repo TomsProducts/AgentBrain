@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/agentbrain;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+agentbrain:
+  claude-dir: /claude-store
+  sync:
+    token: ${SYNC_TOKEN:dev-token-change-me}
+  dream:
+    cron: "0 0 3 * * *"
+  memory:
+    working-ttl-hours: 24
+    episodic-ttl-days: 90
+    context-budget-limit: 20
+
+logging:
+  level:
+    io.agentbrain: DEBUG
