@@ -1,5 +1,7 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-import { Brain, BookOpen, Settings, Activity, LayoutDashboard } from 'lucide-react'
+import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Brain, BookOpen, Settings, Activity, LayoutDashboard, LogOut } from 'lucide-react'
+import { authStore, AuthUser } from './store/authStore'
 import Dashboard from './pages/Dashboard'
 import Memory from './pages/Memory'
 import Lessons from './pages/Lessons'
@@ -14,9 +16,43 @@ const navItems = [
   { to: '/activity', icon: Activity, label: 'Activity' },
 ]
 
+function SsoHandler({ onAuth }: { onAuth: () => void }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const token = params.get('sso_token')
+    if (token) {
+      authStore.setToken(token)
+      params.delete('sso_token')
+      navigate(location.pathname, { replace: true })
+      onAuth()
+    }
+  }, [])
+  return null
+}
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  if (!authStore.isAuthenticated()) {
+    authStore.redirectToLogin()
+    return null
+  }
+  return <>{children}</>
+}
+
 function App() {
+  const [user, setUser] = useState<AuthUser | null>(authStore.getUser())
+
+  const handleAuth = () => setUser(authStore.getUser())
+
+  const handleLogout = () => {
+    authStore.clear()
+    authStore.redirectToLogin()
+  }
+
   return (
     <BrowserRouter>
+      <SsoHandler onAuth={handleAuth} />
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
         <nav className="w-56 bg-slate-900 border-r border-slate-700 flex flex-col">
@@ -43,19 +79,30 @@ function App() {
               </NavLink>
             ))}
           </div>
-          <div className="p-3 border-t border-slate-700 text-xs text-slate-600">
-            AgentBrain v0.1
+          <div className="p-3 border-t border-slate-700">
+            {user && (
+              <div className="text-xs text-slate-400 mb-2 truncate" title={user.email}>
+                {user.name || user.email}
+              </div>
+            )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-xs text-slate-500 hover:text-red-400 transition-colors w-full"
+            >
+              <LogOut size={12} />
+              Logout
+            </button>
           </div>
         </nav>
 
         {/* Main content */}
         <main className="flex-1 overflow-auto bg-slate-950">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/memory" element={<Memory />} />
-            <Route path="/lessons" element={<Lessons />} />
-            <Route path="/claude" element={<ClaudeConfig />} />
-            <Route path="/activity" element={<ActivityLog />} />
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/memory" element={<ProtectedRoute><Memory /></ProtectedRoute>} />
+            <Route path="/lessons" element={<ProtectedRoute><Lessons /></ProtectedRoute>} />
+            <Route path="/claude" element={<ProtectedRoute><ClaudeConfig /></ProtectedRoute>} />
+            <Route path="/activity" element={<ProtectedRoute><ActivityLog /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>
