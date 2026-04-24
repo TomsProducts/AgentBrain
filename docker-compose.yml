@@ -1,6 +1,21 @@
 version: '3.9'
 
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: agentbrain
+      POSTGRES_USER: ${DB_USER:-agentbrain}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-e653326499fc2cd90849a7fe57c4831b}
+    volumes:
+      - agentbrain_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-agentbrain} -d agentbrain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -10,9 +25,14 @@ services:
       - ./data:/app/data
       - claude-store:/claude-store
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       AGENTBRAIN_CLAUDE_DIR: /claude-store
       SYNC_TOKEN: ${SYNC_TOKEN:-dev-token-change-me}
+      DB_USER: ${DB_USER:-agentbrain}
+      DB_PASSWORD: ${DB_PASSWORD:-e653326499fc2cd90849a7fe57c4831b}
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -26,3 +46,5 @@ services:
 
 volumes:
   claude-store:
+  agentbrain_pgdata:
+    external: true
