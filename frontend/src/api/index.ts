@@ -100,3 +100,16 @@ export const contextApi = {
   get: (q?: string) =>
     fetch(`${BASE}/context${q ? `?q=${encodeURIComponent(q)}` : ''}`).then(r => r.json()),
 }
+
+export const backupApi = {
+  export: () => fetch(`${BASE}/backup/export`).then(r => r.blob()),
+  import: (file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return fetch(`${BASE}/backup/import`, { method: 'POST', body: form }).then(r => r.json())
+  },
+  list: (): Promise<string[]> => fetch(`${BASE}/backup/list`).then(r => r.json()),
+  restore: (name: string) =>
+    fetch(`${BASE}/backup/restore/${encodeURIComponent(name)}`, { method: 'POST' }).then(r => r.json()),
+  triggerNow: () => fetch(`${BASE}/backup/now`, { method: 'POST' }).then(r => r.json()),
+}

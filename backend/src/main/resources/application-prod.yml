@@ -11,6 +11,6 @@ spring:
   flyway:
     enabled: true
 
-logging:
-  level:
-    io.agentbrain: INFO
+agentbrain:
+  backup:
+    dir: /app/data/backups
