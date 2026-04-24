@@ -38,6 +38,8 @@ agentbrain:
     working-ttl-hours: 24
     episodic-ttl-days: 90
     context-budget-limit: 20
+  backup:
+    dir: ${BACKUP_DIR:./data/backups}
 
 logging:
   level:

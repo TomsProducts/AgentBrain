@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-import { Brain, BookOpen, Settings, Activity, LayoutDashboard } from 'lucide-react'
+import { Brain, BookOpen, Settings, Activity, LayoutDashboard, HardDrive } from 'lucide-react'
 import Dashboard from './pages/Dashboard'
 import Memory from './pages/Memory'
 import Lessons from './pages/Lessons'
 import ClaudeConfig from './pages/ClaudeConfig'
 import ActivityLog from './pages/ActivityLog'
+import Backup from './pages/Backup'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -12,6 +13,7 @@ const navItems = [
   { to: '/lessons', icon: BookOpen, label: 'Lessons' },
   { to: '/claude', icon: Settings, label: 'Claude Config' },
   { to: '/activity', icon: Activity, label: 'Activity' },
+  { to: '/backup', icon: HardDrive, label: 'Backup' },
 ]
 
 function App() {
@@ -56,6 +58,7 @@ function App() {
             <Route path="/lessons" element={<Lessons />} />
             <Route path="/claude" element={<ClaudeConfig />} />
             <Route path="/activity" element={<ActivityLog />} />
+            <Route path="/backup" element={<Backup />} />
           </Routes>
         </main>
       </div>
