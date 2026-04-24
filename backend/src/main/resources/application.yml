@@ -39,9 +39,6 @@ agentbrain:
     episodic-ttl-days: 90
     context-budget-limit: 20
 
-jwt:
-  secret: ${JWT_SECRET:nexlayer-shared-sso-secret-change-in-production-64chars!!}
-
 logging:
   level:
     io.agentbrain: DEBUG

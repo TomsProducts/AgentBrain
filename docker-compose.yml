@@ -13,8 +13,6 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       AGENTBRAIN_CLAUDE_DIR: /claude-store
       SYNC_TOKEN: ${SYNC_TOKEN:-dev-token-change-me}
-      JWT_SECRET: ${JWT_SECRET:-nexlayer-shared-sso-secret-change-in-production-64chars!!}
-      IDENTITY_SERVER_URL: ${IDENTITY_SERVER_URL:-http://192.168.68.111:3007}
     restart: unless-stopped
 
   frontend:
